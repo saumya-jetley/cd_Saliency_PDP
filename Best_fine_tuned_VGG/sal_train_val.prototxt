@@ -1,0 +1,581 @@
+name: "Saliency_salicon"
+
+input: "imdata"
+input_dim: 1
+input_dim: 3
+input_dim: 224
+input_dim: 224
+
+input: "fmap"
+input_dim: 1
+input_dim: 1
+input_dim: 224
+input_dim: 224
+
+#-----------------------------------------------------------------------
+# start of hidden layers
+# keep everything below conv3_1 frozen (during training)
+layer {
+  bottom: "imdata"
+  top: "conv1_1"
+  name: "conv1_1"
+  type: "Convolution"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+}
+
+layer {
+  bottom: "conv1_1"
+  top: "conv1_1"
+  name: "relu1_1"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv1_1"
+  top: "conv1_2"
+  name: "conv1_2"
+  type: "Convolution"
+  convolution_param {
+    num_output: 64
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+}
+
+layer {
+  bottom: "conv1_2"
+  top: "conv1_2"
+  name: "relu1_2"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv1_2"
+  top: "pool1"
+  name: "pool1"
+  type: "Pooling"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+
+layer {
+  bottom: "pool1"
+  top: "conv2_1"
+  name: "conv2_1"
+  type: "Convolution"
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+}
+
+layer {
+  bottom: "conv2_1"
+  top: "conv2_1"
+  name: "relu2_1"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv2_1"
+  top: "conv2_2"
+  name: "conv2_2"
+  type: "Convolution"
+  convolution_param {
+    num_output: 128
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 0
+    decay_mult: 0
+  }
+}
+
+layer {
+  bottom: "conv2_2"
+  top: "conv2_2"
+  name: "relu2_2"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv2_2"
+  top: "pool2"
+  name: "pool2"
+  type: "Pooling"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+
+# start fine tuning/learning from here:
+layer {
+  bottom: "pool2"
+  top: "conv3_1"
+  name: "conv3_1"
+  type: "Convolution"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult: 0.1
+  }
+  param {
+    lr_mult: 0.2
+    decay_mult: 0
+  }
+}
+
+layer {
+  bottom: "conv3_1"
+  top: "conv3_1"
+  name: "relu3_1"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv3_1"
+  top: "conv3_2"
+  name: "conv3_2"
+  type: "Convolution"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv3_2"
+  top: "conv3_2"
+  name: "relu3_2"
+  type: "ReLU"
+}
+layer {
+  bottom: "conv3_2"
+  top: "conv3_3"
+  name: "conv3_3"
+  type: "Convolution"
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv3_3"
+  top: "conv3_3"
+  name: "relu3_3"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv3_3"
+  top: "pool3"
+  name: "pool3"
+  type: "Pooling"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+
+layer {
+  bottom: "pool3"
+  top: "conv4_1"
+  name: "conv4_1"
+  type: "Convolution"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv4_1"
+  top: "conv4_1"
+  name: "relu4_1"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv4_1"
+  top: "conv4_2"
+  name: "conv4_2"
+  type: "Convolution"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv4_2"
+  top: "conv4_2"
+  name: "relu4_2"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv4_2"
+  top: "conv4_3"
+  name: "conv4_3"
+  type: "Convolution"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv4_3"
+  top: "conv4_3"
+  name: "relu4_3"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv4_3"
+  top: "pool4"
+  name: "pool4"
+  type: "Pooling"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+
+layer {
+  bottom: "pool4"
+  top: "conv5_1"
+  name: "conv5_1"
+  type: "Convolution"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv5_1"
+  top: "conv5_1"
+  name: "relu5_1"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv5_1"
+  top: "conv5_2"
+  name: "conv5_2"
+  type: "Convolution"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv5_2"
+  top: "conv5_2"
+  name: "relu5_2"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv5_2"
+  top: "conv5_3"
+  name: "conv5_3"
+  type: "Convolution"
+  convolution_param {
+    num_output: 512
+    pad: 1
+    kernel_size: 3
+  }
+  param {
+    lr_mult: 0.1
+    decay_mult:0.1
+  }
+  param {
+    lr_mult:0.2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv5_3"
+  top: "conv5_3"
+  name: "relu5_3"
+  type: "ReLU"
+}
+
+## - The max pooling here has been removed - ##
+
+# end of shared layers
+
+# now sal-specific layers to generate a fixation map for saliency
+## option-1 - convolution with a bigger mask
+layer {
+  bottom: "conv5_3"
+  top: "conv6_map"
+  name: "conv6_map"
+  type: "Convolution"
+  convolution_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std:0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+  param {
+    lr_mult: 1
+    decay_mult:1
+  }
+  param {
+    lr_mult:2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv6_map"
+  top: "conv6_map"
+  name: "relu6_map"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv6_map"
+  top: "conv7_map"
+  name: "conv7_map"
+  type: "Convolution"
+  convolution_param {
+    num_output: 8
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std:0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+  param {
+    lr_mult: 1
+    decay_mult:1
+  }
+  param {
+    lr_mult:2
+    decay_mult:0
+  } 
+}
+
+layer {
+  bottom: "conv7_map"
+  top: "conv7_map"
+  name: "relu7_map"
+  type: "ReLU"
+}
+
+layer {
+  bottom: "conv7_map"
+  # top: "predmap"
+  # name: "predmap"
+  top: "conv8_map"
+  name: "conv8_map"
+  type: "Convolution"
+  convolution_param {
+    num_output: 1
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "gaussian"
+      std:0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+  param {
+    lr_mult: 1
+    decay_mult:1
+  }
+  param {
+    lr_mult:2
+    decay_mult:0
+  } 
+}
+
+# interpolate:
+layer { 
+  name: "upsample"
+  type: "Deconvolution"
+  bottom: "conv8_map"
+  top: "predmap"
+  convolution_param {
+    num_output: 1
+    bias_term: false
+    kernel_size: 4
+    stride: 2
+  }
+  # param {
+  #   lr_mult: 1
+  #   decay_mult:1
+  # }
+  param {
+    lr_mult: 0
+  }
+}
+
+# reg loss layer
+layer {
+  type: "Python"
+  name: "loss_fmap"
+  top: "loss_fmap"
+  bottom: "predmap"
+  bottom: "fmap"
+  python_param {
+    module: "pyBhatdist"
+    layer: "GBCLossLayer"
+    # layer: "gPPKGainLayer"
+    # layer: "gGBCLossLayer"
+  }
+  loss_weight: 1
+  include {
+    phase: TRAIN
+  }
+}
+
+# reg loss layer
+layer {
+  type: "Python"
+  name: "loss_fmap"
+  top: "loss_fmap"
+  bottom: "predmap"
+  bottom: "fmap"
+  python_param {
+    module: "pyBhatdist"
+    layer: "GBCLossLayer"
+    # layer: "gPPKGainLayer"
+    # layer: "gGBCLossLayer"
+  }
+  loss_weight: 0
+  include {
+    phase: TEST
+  }
+}
+
