@@ -30,8 +30,9 @@ from salicon.salicon import SALICON
 from saliconeval.eval import SALICONEval
 from image2json import ImageTools 
 import caffe
-import filter_fns as ffns
-import frcnn_fns as frcnnf
+# import filter_fns as ffns
+# import frcnn_fns as frcnnf
+import sal_helpers as salh
 
 def augment_data(mats):
     # randomly flip:
@@ -111,7 +112,7 @@ def do_validation(mapdir, jsondir, jsonname, db, im_means, datum, solver, rst_bl
     for vali in range(num_val):
         #run the test net 
         net_inputs, imgname = get_inputs_from_lmdb(db, im_means, datum, idx=vali, aug=None)
-        frcnnf.copy_blobs_to_net(solver.net, rst_blob_names, net_inputs)
+        salh.copy_blobs_to_net(solver.net, rst_blob_names, net_inputs)
         solver.net.forward()
 
         #get the image
@@ -328,7 +329,7 @@ if __name__ == "__main__":
     else:
         # initialize deconv filters to bilinear filter:
         interp_layers = [k for k in solver.net.params.keys() if 'up' in k]
-        ffns.interp_surgery(solver.net, interp_layers)
+        salh.interp_surgery(solver.net, interp_layers)
         solver.net.copy_from(pretrned_file)
 
     # run solver:
@@ -338,7 +339,7 @@ if __name__ == "__main__":
         for inum in range(trn_btchsz):
             net_inputs.append(get_inputs_from_lmdb(trn_dbs, im_means, datum, idx=None, aug=None)[0])
         net_inputs = [np.concatenate(x,axis=0) for x in zip(*net_inputs)]
-        frcnnf.copy_blobs_to_net(solver.net, rst_blob_names, net_inputs)
+        salh.copy_blobs_to_net(solver.net, rst_blob_names, net_inputs)
 
         # train:
 	solver.step(stepsz)
